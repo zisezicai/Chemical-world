@@ -23,4 +23,9 @@ public:
 		}
         return select[0] - '1';
 	}
+	static std::string getInstruction() {
+		std::string res;
+		std::getline(std::cin, res);
+		return res;
+	}
 };

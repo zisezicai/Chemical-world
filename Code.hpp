@@ -29,11 +29,11 @@ public:
 	void update() override {
 		Scene::update();
 		OutPutManager::screenReplace("");
-		OutPutManager::screenReplace(R"(
+		OutPutManager::screenReplace(std::u8string(u8R"(
 			-------------------------------------------------------------------
 			|                 chemical world - main menu                      |
 			-------------------------------------------------------------------
-)");//string存不了u8，呃呃呃，VS用不了u8R，呃呃呃
+)"));//string存不了u8，呃呃呃，VS用不了u8R，呃呃呃
 		pair<vector<string>, vector<function<void()>>> p = { vector<string>{"New Game", "Load Save", "Set", "Exit"} ,{
 		  [this]() {
 			loadScene("Register");
@@ -82,6 +82,15 @@ public:
 	}
 };
 class SetScene :public Scene {
+private:
+	static vector<string> split(string s) {
+		vector<string> res{""};
+		for (int i = 0;i < s.length();i++) {
+			if (s[i] == ' ') res.push_back("");
+			else res.back() += s[i];
+		}
+		return res;
+	}
 public:
 	SetScene(string name):Scene(name){}
 	void update() override {
@@ -89,6 +98,22 @@ public:
 		//test
 		system("cls");
 		SetManager::listAllSet();
-		getchar();
+		string s=InputManager::getInstruction();
+		vector<string> instruction = split(s);
+		if (instruction[0] == "exit") {
+			loadScene("Start");
+			return;
+		}
+		if (instruction.size() <= 1) {
+			cout << "fail\n";
+		}
+		else {
+			if (SetManager::setItem(instruction[0], instruction[1])) {
+				cout << "fail\n";
+			}
+			else {
+				OutPutManager::clearScreen();
+			}
+		}
 	}
 };

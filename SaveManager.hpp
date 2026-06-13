@@ -15,18 +15,20 @@ private:
 public:
 	static std::string savePath;
 	static std::string logPath;
-	static void sureExists(const std::filesystem::path& path,std::function<bool(const std::filesystem::path&)> type) {
-		if (std::filesystem::exists(path) && !type(path)) {
-			std::filesystem::remove(path);
-		}
+	static void sureExistsDirectories(const std::filesystem::path& path) {
 		if (!std::filesystem::exists(path)) {
 			std::filesystem::create_directories(path);
+		}
+	}
+	static void sureExistsFile(const std::filesystem::path& path) {
+		if (!std::filesystem::exists(path)) {
+			std::ofstream(path).close();
 		}
 	}
 	void save() const {
 		try {
 			std::string finalPath = savePath +"\\" + name;
-			sureExists((std::filesystem::path&)savePath, static_cast<bool(*)(const std::filesystem::path&)>(std::filesystem::is_directory));
+			sureExistsDirectories((std::filesystem::path)savePath);
 			std::ofstream file(finalPath);
 			file << "name:" << name << std::endl;//先简单的试一下存档，以后慢慢写
 			// TODO: Write save data to file
@@ -89,6 +91,16 @@ public:
 		}
 	}
 	static void loadSet() {
-		SaveManager::sureExists((std::filesystem::path&)setPath, static_cast<bool(*)(const std::filesystem::path&)>(std::filesystem::is_regular_file));
+		SaveManager::sureExistsFile((std::filesystem::path)setPath);
+	}
+	static bool setItem(std::string key, std::string value) {
+		if (settings.find(key) == settings.end()) {
+			return false;
+		}
+		settings[key] = value;
+		return true;
+	}
+	static void addItem(std::string key,std::string defaultValue){
+		settings.insert({ key, defaultValue });
 	}
 };

@@ -1769,7 +1769,10 @@ void setupGame(SceneManager& sceneManager)
     sceneManager.addScene(new GameScene("Game"));
     sceneManager.addScene(new SetScene("Set"));
 }
-
+void initStaticClass() {
+    SetManager::addItem("playerName", "player");
+    SetManager::addItem("Control","None");
+}
 int main()
 {
     OutPutManager::screenReplace("loading");
@@ -1780,10 +1783,11 @@ int main()
 	//cls();
 	//showlogo();
     system("cls");
+    initStaticClass();
     try {
 
         // 测试存档目录是否可创建
-    //    if (!fs::exists("saves")) {//下崽，不过也不是流氓软件那种下
+    //    if (!fs::exists("saves")) {
     //        if (!fs::create_directory("saves")) {
     //            cerr << "X 无法创建 saves 目录！" << endl;
 				//system("pause");
