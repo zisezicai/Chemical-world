@@ -15,15 +15,19 @@ private:
 public:
 	static std::string savePath;
 	static std::string logPath;
-	static void sureExistsDirectories(const std::filesystem::path& path) {
+	static bool sureExistsDirectories(const std::filesystem::path& path) {
 		if (!std::filesystem::exists(path)) {
 			std::filesystem::create_directories(path);
+			return false;
 		}
+		return true;
 	}
-	static void sureExistsFile(const std::filesystem::path& path) {
+	static bool sureExistsFile(const std::filesystem::path& path) {
 		if (!std::filesystem::exists(path)) {
 			std::ofstream(path).close();
+			return false;
 		}
+		return true;
 	}
 	void save() const {
 		try {
@@ -78,6 +82,11 @@ public:
 class SetManager {
 private://这个不能unordered了
 	static std::map<std::string, std::string> settings;
+	static void checkSettings(std::string s) {
+		if (settings.find(s) == settings.end()) {
+			settings[s] = "error:item lost";
+		}
+	}
 public:
 	static std::string setPath;
 	static void saveSet() {
@@ -91,7 +100,27 @@ public:
 		}
 	}
 	static void loadSet() {
-		SaveManager::sureExistsFile((std::filesystem::path)setPath);
+		if (!SaveManager::sureExistsFile((std::filesystem::path)setPath)) {
+			//默认设置
+			settings["playerName"] = "player";
+			settings["control"] = "none";
+		}
+		else {
+			std::ifstream is(setPath);
+			std::string key, value;
+			while (is >> key) {
+				is >> value;
+				settings[key] = value;
+			}
+		}
+		checkSettings("playerName");
+		checkSettings("control");
+	}
+	static void writeSet() {
+		std::ofstream of(setPath);
+		for (auto [key, value] : settings) {
+			of << key << ' ' << value << '\n';
+		}
 	}
 	static bool setItem(std::string key, std::string value) {
 		if (settings.find(key) == settings.end()) {

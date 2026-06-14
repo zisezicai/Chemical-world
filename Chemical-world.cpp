@@ -1770,8 +1770,11 @@ void setupGame(SceneManager& sceneManager)
     sceneManager.addScene(new SetScene("Set"));
 }
 void initStaticClass() {
-    SetManager::addItem("playerName", "player");
-    SetManager::addItem("Control","None");
+    SetManager::loadSet();
+}
+void gameOver() {
+    SetManager::writeSet();
+    SaveManager::SaveAll();//好多余啊...
 }
 int main()
 {
@@ -1799,7 +1802,6 @@ int main()
         setupGame(sceneManager);
         sceneManager.loadScene(startSceneName);
         while (!sceneManager.update()) {}
-        SaveManager::SaveAll();//好多余啊...
 
     }
     catch (const exception& e) {
@@ -1812,6 +1814,7 @@ int main()
         system("pause");
         return 1;
     }
+    gameOver();
 	//撒花，游戏成功运行了！虽然现在内容还很少，但这是一个好的开始！后续版本会逐渐添加更多的内容和功能，敬请期待！谢谢大家的支持！
     //(ﾉ*･ω･)ﾉ (花x114514)
     //(👉ﾟヮﾟ)👉👈(ﾟヮﾟ👈)
