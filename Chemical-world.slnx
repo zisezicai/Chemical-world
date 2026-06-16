@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="Chemical-world/Chemical-world.vcxproj" Id="36670343-4f9a-48c8-817e-87b407f79168" />
+</Solution>
